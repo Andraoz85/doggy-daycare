@@ -1,3 +1,4 @@
+// app/components/types.tsx
 export interface Owner {
   name: string;
   lastName: string;

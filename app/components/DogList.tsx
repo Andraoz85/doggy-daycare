@@ -1,3 +1,4 @@
+// app/components/DogList.tsx
 "use client";
 import type { Dog } from "./types";
 import DogCard from "./DogCard";

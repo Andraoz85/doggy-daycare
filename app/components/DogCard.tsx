@@ -1,3 +1,4 @@
+// app/components/DogCard.tsx
 "use client";
 import Link from "next/link";
 import { Dog } from "./types";

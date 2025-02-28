@@ -1,3 +1,4 @@
+// app/context/DogsContext.tsx
 "use client";
 import { createContext, useState, useEffect, useRef, ReactNode } from "react";
 import type { Dog } from "../components/types";
@@ -22,7 +23,6 @@ export function DogsProvider({ children }: { children: ReactNode }) {
         if (hasFetched.current) return;
         hasFetched.current = true;
 
-        console.log("Fetching dogs in context...");
         fetch("https://majazocom.github.io/Data/dogs.json")
             .then((res) => {
                 if (!res.ok) {
@@ -31,7 +31,6 @@ export function DogsProvider({ children }: { children: ReactNode }) {
                 return res.json();
             })
             .then((data: Dog[]) => {
-                // Generera unika id om de saknas, t.ex. med index
                 const dogsWithId = data.map((dog, index) => ({
                     ...dog,
                     id: index,

@@ -1,16 +1,17 @@
-// Get data with fetch
-// Manage loading and error states
-// Send data to child components
+// app/dogs/page.tsx
 
 "use client";
-import { useState, useEffect, useRef } from "react";
-import { Dog } from "../components/types";
+import { useState, useContext } from "react";
+import { DogsContext } from "../context/DogsContext";
 import DogList from "../components/DogList";
 
 export default function DogsPage() {
-    const [dogs, setDogs] = useState<Dog[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const dogsCtx = useContext(DogsContext);
+    if (!dogsCtx) {
+        return <p>DogsContext not found.</p>;
+    }
+    
+    const { dogs, loading, error } = dogsCtx;
 
     const [tempSearch, setTempSearch] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
@@ -20,34 +21,6 @@ export default function DogsPage() {
     >("all");
     const [showFilterDropdown, setShowFilterDropdown] = useState(false);
 
-    const hasFetched = useRef(false);
-
-    useEffect(() => {
-        if (hasFetched.current) return; // prevent double-fetch
-        hasFetched.current = true; // set to true after first fetch
-
-        console.log("Fetching dogs...");
-        fetch("https://majazocom.github.io/Data/dogs.json")
-            .then((res) => {
-                if (!res.ok) {
-                    throw new Error("Failed to fetch dogs");
-                }
-                return res.json();
-            })
-            .then((data: Dog[]) => {
-                const dogsId = data.map((dog, index) => ({
-                    ...dog,
-                    id: index,
-                }));
-                setDogs(dogsId);
-                setLoading(false);
-                console.log("Fetched dogs:", data);
-            })
-            .catch((err) => {
-                setError(err.message);
-                setLoading(false);
-            });
-    }, []);
 
     function handleSearchClick() {
         setSearchQuery(tempSearch);
@@ -85,9 +58,8 @@ export default function DogsPage() {
                 OUR DOGS
             </h1>
 
-            {/* todo add search and filter */}
             <div className="flex justify-center items-center gap-4 mb-6">
-                {/* Sökfält + knapp */}
+                {/* search-field + button */}
                 <div className="flex items-center gap-2">
                     <input
                         type="text"
@@ -104,7 +76,7 @@ export default function DogsPage() {
                     </button>
                 </div>
 
-                {/* Filter-knapp + dropdown */}
+                {/* Filter-button + dropdown */}
                 <div className="relative">
                     <button
                         onClick={() =>
@@ -142,7 +114,6 @@ export default function DogsPage() {
                 </div>
             </div>
 
-            {/* Card with dog info */}
             <DogList dogs={filteredDogs} />
         </main>
     );
